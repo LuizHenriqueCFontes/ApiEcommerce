@@ -7,36 +7,67 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-29T12:50:39-0300",
-    comments = "version: 1.6.0, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-12-03T21:55:50+0000",
+    comments = "version: 1.6.0, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class UsuarioMapperImpl implements UsuarioMapper {
 
     @Override
-    public ResponseAuthDTO toDTO(Usuario usuario) {
+    public AuthResponseDTO toAuthDTO(Usuario usuario) {
         if ( usuario == null ) {
             return null;
         }
 
         String type = null;
-        String subject = null;
         String token = null;
+        String subject = null;
 
-        ResponseAuthDTO responseAuthDTO = new ResponseAuthDTO( type, subject, token );
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO( type, token, subject );
 
-        return responseAuthDTO;
+        return authResponseDTO;
     }
 
     @Override
-    public List<ResponseAuthDTO> listTDO(List<Usuario> usuarios) {
+    public ListDTO toListDTO(Usuario usuario) {
+        if ( usuario == null ) {
+            return null;
+        }
+
+        String username = null;
+        String email = null;
+
+        username = usuario.getUsername();
+        email = usuario.getEmail();
+
+        ListDTO listDTO = new ListDTO( username, email );
+
+        return listDTO;
+    }
+
+    @Override
+    public List<AuthResponseDTO> toAuthDTO(List<Usuario> usuarios) {
         if ( usuarios == null ) {
             return null;
         }
 
-        List<ResponseAuthDTO> list = new ArrayList<ResponseAuthDTO>( usuarios.size() );
+        List<AuthResponseDTO> list = new ArrayList<AuthResponseDTO>( usuarios.size() );
         for ( Usuario usuario : usuarios ) {
-            list.add( toDTO( usuario ) );
+            list.add( toAuthDTO( usuario ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<ListDTO> toListDTO(List<Usuario> usuarios) {
+        if ( usuarios == null ) {
+            return null;
+        }
+
+        List<ListDTO> list = new ArrayList<ListDTO>( usuarios.size() );
+        for ( Usuario usuario : usuarios ) {
+            list.add( toListDTO( usuario ) );
         }
 
         return list;

@@ -3,6 +3,7 @@ package com.estudos.ecommerce.security;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class TokenService {
 
 			String token = JWT.create()
 							.withIssuer("auth-api")
-							.withSubject(usuario.getEmai())
+							.withSubject(usuario.getEmail())
 							.withClaim("roles", List.of(roles))
 							.withExpiresAt(expirationTime())
 							.sign(algorithm);

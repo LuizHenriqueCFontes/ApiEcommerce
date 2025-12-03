@@ -37,25 +37,31 @@ public class AuthService {
 		
 		var authentication = authenticationManager.authenticate(authToken);
 		
-		
+		Usuario usuario = (Usuario) authentication.getPrincipal();
+
+		String token = tokenService.generateToken(usuario);
+
+		AuthResponseDTO response = new AuthResponseDTO(token, data.email());
+
+		return response;
 		
 	}
 	
 	public AuthResponseDTO register(RegisterDTO data) {
-		String senhaCriptografada = passwordEncoder.encoder(data.password());
+		String senhaCriptografada = passwordEncoder.encode(data.password());
 
 		if(usuarioRepository.existsByEmail(data.email())) {
 			throw new EmailCadastradoException("Email indisponivel");
 
 		}
 
-		Usuario usuario = new Usuario(data.username(), data.email(), senhaCriptografada(), UserRole.USER);
+		Usuario usuario = new Usuario(data.username(), data.email(), senhaCriptografada, UserRole.USER);
 		
 		String token = tokenService.generateToken(usuario);
 
 		usuarioRepository.save(usuario);
 
-		AuthResponseDTO header = new AuthResponseDTO(token, subject);
+		AuthResponseDTO header = new AuthResponseDTO(token, data.email());
 		
 		return header;
 	}

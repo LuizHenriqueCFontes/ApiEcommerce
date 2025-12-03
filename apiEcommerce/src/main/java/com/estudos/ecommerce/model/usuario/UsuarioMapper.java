@@ -6,8 +6,12 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
-	ResponseAuthDTO toDTO(Usuario usuario);
+	AuthResponseDTO toAuthDTO(Usuario usuario);
 	
-	List<ResponseAuthDTO> listTDO(List<Usuario> usuarios);
+	ListDTO toListDTO(Usuario usuario);
+
+	List<AuthResponseDTO> toAuthDTO(List<Usuario> usuarios);
+
+	List<ListDTO> toListDTO(List<Usuario> usuarios);
 	
 }

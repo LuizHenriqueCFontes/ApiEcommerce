@@ -5,21 +5,29 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.estudos.ecommerce.exception.UsuarioNaoEncontradoException;
+import com.estudos.ecommerce.model.usuario.ListDTO;
 import com.estudos.ecommerce.model.usuario.Usuario;
+import com.estudos.ecommerce.model.usuario.UsuarioMapper;
 import com.estudos.ecommerce.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
 	
 	private final UsuarioRepository usuarioRepository;
+	private final UsuarioMapper usuarioMapper;
 	
-	public UsuarioService(UsuarioRepository usuarioRepository) {
+	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
 		this.usuarioRepository = usuarioRepository;
-		
+		this.usuarioMapper = usuarioMapper;
+
 	}
 	
-	public List<Usuario> listUsers() {
-		return usuarioRepository.findAll();
+	public List<ListDTO> listUsers() {
+		List<Usuario> users = usuarioRepository.findAll();
+
+		List<ListDTO> listUsers = usuarioMapper.toListDTO(users);
+		
+		return listUsers;
 		
 	}
 	
