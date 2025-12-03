@@ -6,6 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.estudos.ecommerce.exception.EmailCadastradoException;
+import com.estudos.ecommerce.model.usuario.AuthResponseDTO;
+import com.estudos.ecommerce.model.usuario.LoginDTO;
+import com.estudos.ecommerce.model.usuario.RegisterDTO;
 import com.estudos.ecommerce.model.usuario.UserRole;
 import com.estudos.ecommerce.model.usuario.Usuario;
 import com.estudos.ecommerce.repository.UsuarioRepository;
@@ -29,34 +32,32 @@ public class AuthService {
 		
 	}
 	
-	public String login(String email, String password) {
-		var authToken = new UsernamePasswordAuthenticationToken(email, password);
+	public AuthResponseDTO login(LoginDTO data) {
+		var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 		
 		var authentication = authenticationManager.authenticate(authToken);
 		
-		String token = tokenService.generateToken(authentication.getName());
 		
-		return token;
 		
 	}
 	
-	public String register(String username, String email, String password) {
-		String senhaCriptografada = passwordEncoder.encode(password);
-		
-		if(usuarioRepository.existsByEmail(email)) {
-			throw new EmailCadastradoException("Email ja cadastrado");
-			
+	public AuthResponseDTO register(RegisterDTO data) {
+		String senhaCriptografada = passwordEncoder.encoder(data.password());
+
+		if(usuarioRepository.existsByEmail(data.email())) {
+			throw new EmailCadastradoException("Email indisponivel");
+
 		}
+
+		Usuario usuario = new Usuario(data.username(), data.email(), senhaCriptografada(), UserRole.USER);
 		
-		Usuario usuario = new Usuario(username, email, senhaCriptografada, UserRole.USER);
-		
+		String token = tokenService.generateToken(usuario);
+
 		usuarioRepository.save(usuario);
+
+		AuthResponseDTO header = new AuthResponseDTO(token, subject);
 		
-		String token = tokenService.generateToken(usuario.getEmail());
-		
-		return token;
-	
-		
+		return header;
 	}
 
 }

@@ -1,0 +1,31 @@
+{
+  "name": "Spring Boot + Java 21 + MySQL",
+  "image": "mcr.microsoft.com/devcontainers/base:jammy",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21"
+    },
+    "ghcr.io/devcontainers/features/maven:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/mysql:1": {
+      "version": "8.0",
+      "mysqlDatabase": "mydb",
+      "mysqlUser": "user",
+      "mysqlPassword": "user",
+      "mysqlRootPassword": "root"
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y mysql-client",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-maven"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 3306],
+  "remoteUser": "vscode"
+}

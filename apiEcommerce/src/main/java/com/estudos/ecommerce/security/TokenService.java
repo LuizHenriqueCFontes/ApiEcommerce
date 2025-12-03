@@ -24,12 +24,16 @@ public class TokenService {
 		
 	}
 	
-	public String generateToken(String email) {
+	public String generateToken(Usuario usuario) {
 		
 		try {
+
+			String roles = usuario.getRole().getRole();
+
 			String token = JWT.create()
 							.withIssuer("auth-api")
-							.withSubject(email)
+							.withSubject(usuario.getEmai())
+							.withClaim("roles", List.of(roles))
 							.withExpiresAt(expirationTime())
 							.sign(algorithm);
 			
