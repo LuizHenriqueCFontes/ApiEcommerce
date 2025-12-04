@@ -57,6 +57,7 @@ public class UsuarioService {
 		
 	}
 	
+	@Transactional
 	public void delete(String id) {
 		if(!usuarioRepository.existsById(id)) {
 			throw new UsuarioNaoEncontradoException("Usuario nao encontrado");

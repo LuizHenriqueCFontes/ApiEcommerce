@@ -3,6 +3,7 @@ package com.estudos.ecommerce.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +42,14 @@ public class UsuarioController {
 		
 		return ResponseEntity.ok(user);
 		
+	}
+
+	@DeleteMapping("delete/{id}")
+	public ResponseEntity<Void> delete(@PathVariable String id) {
+		usuarioService.delete(id);
+
+		return ResponseEntity.noContent().build();
+
 	}
 	
 
