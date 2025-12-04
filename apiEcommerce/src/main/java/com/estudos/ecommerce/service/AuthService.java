@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.estudos.ecommerce.exception.EmailCadastradoException;
+import com.estudos.ecommerce.exception.UsuarioNaoEncontradoException;
 import com.estudos.ecommerce.model.usuario.AuthResponseDTO;
 import com.estudos.ecommerce.model.usuario.LoginDTO;
 import com.estudos.ecommerce.model.usuario.RegisterDTO;
@@ -33,6 +34,7 @@ public class AuthService {
 	}
 	
 	public AuthResponseDTO login(LoginDTO data) {
+		
 		var authToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 		
 		var authentication = authenticationManager.authenticate(authToken);

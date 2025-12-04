@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-03T21:55:50+0000",
-    comments = "version: 1.6.0, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-12-04T13:06:38-0300",
+    comments = "version: 1.6.0, compiler: Eclipse JDT (IDE) 3.43.0.v20250819-1513, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class UsuarioMapperImpl implements UsuarioMapper {
@@ -46,6 +46,23 @@ public class UsuarioMapperImpl implements UsuarioMapper {
     }
 
     @Override
+    public UpdateDTO toUpdateDTO(Usuario usuario) {
+        if ( usuario == null ) {
+            return null;
+        }
+
+        String username = null;
+        String email = null;
+
+        username = usuario.getUsername();
+        email = usuario.getEmail();
+
+        UpdateDTO updateDTO = new UpdateDTO( username, email );
+
+        return updateDTO;
+    }
+
+    @Override
     public List<AuthResponseDTO> toAuthDTO(List<Usuario> usuarios) {
         if ( usuarios == null ) {
             return null;
@@ -68,6 +85,20 @@ public class UsuarioMapperImpl implements UsuarioMapper {
         List<ListDTO> list = new ArrayList<ListDTO>( usuarios.size() );
         for ( Usuario usuario : usuarios ) {
             list.add( toListDTO( usuario ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<UpdateDTO> toUpdateDTO(List<Usuario> usuarios) {
+        if ( usuarios == null ) {
+            return null;
+        }
+
+        List<UpdateDTO> list = new ArrayList<UpdateDTO>( usuarios.size() );
+        for ( Usuario usuario : usuarios ) {
+            list.add( toUpdateDTO( usuario ) );
         }
 
         return list;
