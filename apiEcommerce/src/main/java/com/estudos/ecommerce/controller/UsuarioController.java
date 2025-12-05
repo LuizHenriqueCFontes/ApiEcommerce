@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.estudos.ecommerce.model.usuario.ListDTO;
 import com.estudos.ecommerce.model.usuario.UpdateDTO;
+import com.estudos.ecommerce.model.usuario.UpdatePasswordDTO;
 import com.estudos.ecommerce.service.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class UsuarioController {
 
 	}
 
-	@GetMapping("list")
+	@GetMapping
 	public ResponseEntity<List<ListDTO>> listUsers() {
 		List<ListDTO> users = usuarioService.listUsers();
 
@@ -36,7 +37,7 @@ public class UsuarioController {
 
 	}
 	
-	@PatchMapping("update/{id}")
+	@PatchMapping("/{id}")
 	public ResponseEntity<UpdateDTO> update(@PathVariable String id, @RequestBody @Valid UpdateDTO data){
 		UpdateDTO user = usuarioService.update(id, data);
 		
@@ -44,12 +45,20 @@ public class UsuarioController {
 		
 	}
 
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable String id) {
 		usuarioService.delete(id);
 
 		return ResponseEntity.noContent().build();
 
+	}
+	
+	@PatchMapping("/{id}/password")
+	public ResponseEntity<Void> updatePassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO data) {
+		usuarioService.updatePassword(id, data);
+		
+		return ResponseEntity.noContent().build();
+		
 	}
 	
 

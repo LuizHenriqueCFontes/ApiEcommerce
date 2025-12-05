@@ -2,12 +2,18 @@ package com.estudos.ecommerce.service;
 
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.estudos.ecommerce.exception.IncorrectPasswordException;
 import com.estudos.ecommerce.exception.UsuarioNaoEncontradoException;
 import com.estudos.ecommerce.model.usuario.ListDTO;
 import com.estudos.ecommerce.model.usuario.UpdateDTO;
+import com.estudos.ecommerce.model.usuario.UpdatePasswordDTO;
 import com.estudos.ecommerce.model.usuario.Usuario;
 import com.estudos.ecommerce.model.usuario.UsuarioMapper;
 import com.estudos.ecommerce.repository.UsuarioRepository;
@@ -17,11 +23,13 @@ public class UsuarioService {
 	
 	private final UsuarioRepository usuarioRepository;
 	private final UsuarioMapper usuarioMapper;
+	private final PasswordEncoder passwordEncoder;
 	
-	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
+	public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, PasswordEncoder passwordEncoder) {
 		this.usuarioRepository = usuarioRepository;
 		this.usuarioMapper = usuarioMapper;
-
+		this.passwordEncoder = passwordEncoder;
+		
 	}
 	
 	public List<ListDTO> listUsers() {
@@ -59,12 +67,41 @@ public class UsuarioService {
 	
 	@Transactional
 	public void delete(String id) {
-		if(!usuarioRepository.existsById(id)) {
-			throw new UsuarioNaoEncontradoException("Usuario nao encontrado");
+		try {
+			usuarioRepository.deleteById(id);
+			
+		}catch(EmptyResultDataAccessException e) {
+			throw new UsuarioNaoEncontradoException("Usuario não encontrado");
 			
 		}
 		
-		usuarioRepository.deleteById(id);
+	}
+	
+	@Transactional
+	public void updatePassword(String id, UpdatePasswordDTO data) {
+		Usuario usuario = usuarioRepository.findById(id)
+											.orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado"));
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		String authenticatedUserId = auth.getName();
+		
+		boolean isAdmin = auth.getAuthorities().stream()
+												.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+		
+		if(!passwordEncoder.matches(data.oldPassword(), usuario.getPassword())) {
+			throw new IncorrectPasswordException("Senha incorreta");
+			
+		}
+		
+		if(data.newPassword() != null && !data.newPassword().isBlank()) {
+			String senhaCriptografada = passwordEncoder.encode(data.newPassword());
+			
+			usuario.setPassword(senhaCriptografada);
+			
+		}
+		
+		usuarioRepository.save(usuario);
 		
 	}
 	
