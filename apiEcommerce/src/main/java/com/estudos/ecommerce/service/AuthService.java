@@ -59,9 +59,11 @@ public class AuthService {
 
 		Usuario usuario = new Usuario(data.username(), data.email(), senhaCriptografada, UserRole.USER);
 		
-		String token = tokenService.generateToken(usuario);
-
 		usuarioRepository.save(usuario);
+		
+		String token = tokenService.generateToken(usuario);
+		
+		
 
 		AuthResponseDTO header = new AuthResponseDTO(token, data.email());
 		

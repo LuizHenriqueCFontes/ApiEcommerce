@@ -1,5 +1,6 @@
 package com.estudos.ecommerce.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,6 @@ import com.estudos.ecommerce.model.usuario.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, String>{
 	 Optional<Usuario> findByEmail(String email);
 	 boolean existsByEmail(String email);
+	 List<Usuario> findByUsernameContainingIgnoreCase(String username);
 
 }

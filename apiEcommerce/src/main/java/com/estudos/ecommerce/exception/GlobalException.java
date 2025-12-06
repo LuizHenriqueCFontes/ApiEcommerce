@@ -78,5 +78,31 @@ public class GlobalException {
 		
 	}
 	
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<Object> hanlderUnauthorizedException(UnauthorizedException ex) {
+		Map<String, Object> body = new LinkedHashMap();
+		
+		body.put("timestamp", LocalDate.now());
+		body.put("status", HttpStatus.NOT_FOUND.value());
+		body.put("error", "acesso não autorizado");
+		body.put("message", ex.getMessage());
+		
+		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+		
+	}
+	
+	@ExceptionHandler(PermissionAlreadyUsedException.class)
+	public ResponseEntity<Object> hanlderPermissionAlreadyUsedException(PermissionAlreadyUsedException ex){
+		Map<String, Object> body = new LinkedHashMap();
+		
+		body.put("timestamp", LocalDate.now());
+		body.put("status", HttpStatus.NOT_FOUND.value());
+		body.put("error", "Usuario ja possui essa permissão");
+		body.put("message", ex.getMessage());
+		
+		return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+		
+	}
+	
 
 }

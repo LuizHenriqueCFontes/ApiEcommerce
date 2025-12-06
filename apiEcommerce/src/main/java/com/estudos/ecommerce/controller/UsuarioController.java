@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.estudos.ecommerce.model.usuario.ListDTO;
 import com.estudos.ecommerce.model.usuario.UpdateDTO;
 import com.estudos.ecommerce.model.usuario.UpdatePasswordDTO;
+import com.estudos.ecommerce.model.usuario.UpdateRoleDTO;
 import com.estudos.ecommerce.service.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -30,8 +32,8 @@ public class UsuarioController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<ListDTO>> listUsers() {
-		List<ListDTO> users = usuarioService.listUsers();
+	public ResponseEntity<List<ListDTO>> listUsers(@RequestParam(required = false) String username) {
+		List<ListDTO> users = usuarioService.listUsers(username);
 
 		return ResponseEntity.ok(users);
 
@@ -56,6 +58,14 @@ public class UsuarioController {
 	@PatchMapping("/{id}/password")
 	public ResponseEntity<Void> updatePassword(@PathVariable String id, @Valid @RequestBody UpdatePasswordDTO data) {
 		usuarioService.updatePassword(id, data);
+		
+		return ResponseEntity.noContent().build();
+		
+	}
+	
+	@PatchMapping("/{id}/role")
+	public ResponseEntity<Void> updateRole(@PathVariable String id, @RequestBody @Valid UpdateRoleDTO data) {
+		usuarioService.updateRole(id, data);
 		
 		return ResponseEntity.noContent().build();
 		

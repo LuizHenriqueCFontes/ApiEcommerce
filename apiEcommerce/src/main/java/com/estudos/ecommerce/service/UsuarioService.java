@@ -10,10 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.estudos.ecommerce.exception.IncorrectPasswordException;
+import com.estudos.ecommerce.exception.PermissionAlreadyUsedException;
+import com.estudos.ecommerce.exception.UnauthorizedException;
 import com.estudos.ecommerce.exception.UsuarioNaoEncontradoException;
 import com.estudos.ecommerce.model.usuario.ListDTO;
 import com.estudos.ecommerce.model.usuario.UpdateDTO;
 import com.estudos.ecommerce.model.usuario.UpdatePasswordDTO;
+import com.estudos.ecommerce.model.usuario.UpdateRoleDTO;
+import com.estudos.ecommerce.model.usuario.UserRole;
 import com.estudos.ecommerce.model.usuario.Usuario;
 import com.estudos.ecommerce.model.usuario.UsuarioMapper;
 import com.estudos.ecommerce.repository.UsuarioRepository;
@@ -32,9 +36,17 @@ public class UsuarioService {
 		
 	}
 	
-	public List<ListDTO> listUsers() {
-		List<Usuario> users = usuarioRepository.findAll();
-
+	public List<ListDTO> listUsers(String username) {
+		List<Usuario> users;
+		
+		if(username == null && username.isBlank()) {
+			users = usuarioRepository.findAll();
+			
+		}else {
+			users = usuarioRepository.findByUsernameContainingIgnoreCase(username);
+			
+		}
+		
 		List<ListDTO> listUsers = usuarioMapper.toListDTO(users);
 		
 		return listUsers;
@@ -82,12 +94,6 @@ public class UsuarioService {
 		Usuario usuario = usuarioRepository.findById(id)
 											.orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado"));
 		
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
-		String authenticatedUserId = auth.getName();
-		
-		boolean isAdmin = auth.getAuthorities().stream()
-												.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 		
 		if(!passwordEncoder.matches(data.oldPassword(), usuario.getPassword())) {
 			throw new IncorrectPasswordException("Senha incorreta");
@@ -100,6 +106,23 @@ public class UsuarioService {
 			usuario.setPassword(senhaCriptografada);
 			
 		}
+		
+		usuarioRepository.save(usuario);
+		
+	}
+	
+	@Transactional
+	public void updateRole(String id, UpdateRoleDTO data) {
+		Usuario usuario = usuarioRepository.findById(id)
+											.orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado"));
+		
+		if(data.role() == usuario.getRole()) {
+			throw new PermissionAlreadyUsedException("usuario ja possui essa role");
+			
+		}
+		
+		usuario.setRole(data.role());
+		
 		
 		usuarioRepository.save(usuario);
 		
