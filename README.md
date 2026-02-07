@@ -170,7 +170,7 @@ Siga esses passos para executar a API localmente:
 
 ### 1️⃣ Pré-requisitos
 
-- **Java 17+** ou superior instalado  
+- **Java 21** ou superior instalado  
 - **Maven 3+** instalado  
 - Banco de dados **MySQL** (ou H2 para testes em memória)  
 - Editor ou IDE (Eclipse, IntelliJ, VS Code, etc.)
@@ -185,10 +185,10 @@ Siga esses passos para executar a API localmente:
 CREATE DATABASE nome_do_banco;
 Configure o application.properties ou application.yml:
 
-spring.datasource.url=jdbc:mysql://localhost:3306/nome_do_banco
+spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce
 spring.datasource.username=root
 spring.datasource.password=senha
-spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=true
 Se quiser usar H2 apenas para testes, adicione:
 
@@ -198,8 +198,8 @@ spring.datasource.username=sa
 spring.datasource.password=
 spring.h2.console.enabled=true
 3️⃣ Clonar o Projeto
-git clone https://github.com/SEU_USUARIO/SEU_PROJETO.git
-cd SEU_PROJETO
+git clone https://github.com/LuizHenriqueCFontes/ApiEcommerce.git
+cd ApiEcommerce
 4️⃣ Build e Execução
 Com Maven, você pode rodar direto:
 
@@ -208,7 +208,7 @@ mvn spring-boot:run
 Ou gerar o .jar e executar:
 
 mvn clean package
-java -jar target/seu-projeto-0.0.1-SNAPSHOT.jar
+java -jar target/ApiEcommerce-0.0.1-SNAPSHOT.jar
 5️⃣ Testar a API
 Acesse os endpoints no Postman ou Insomnia:
 
